@@ -1,5 +1,7 @@
 # Import necessary modules
-#-------------------------
+# -------------------------
+
+import random
 import bson
 import pyttsx3
 import speech_recognition as sr
@@ -9,19 +11,21 @@ import webbrowser
 import os
 
 # Initialize pyttsx3 for speech synthesis
-#----------------------------------------
+# ----------------------------------------
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id) #1 for female voice, 0 for male voice.
+engine.setProperty('voice', voices[1].id)  # 1 for female voice, 0 for male voice.
+
 
 # Function to make the assistant speak
-#--------------------------------------
+# --------------------------------------
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
+
 # Function to greet the user based on the time of day
-#----------------------------------------------------
+# ----------------------------------------------------
 def wishMe():
     hour = int(datetime.datetime.now().hour)
     if hour >= 0 and hour < 12:
@@ -32,8 +36,9 @@ def wishMe():
         speak("Good Evening!")
     speak("I am Pyyra, your virtual assistant. How can I help you today?")
 
+
 # Function to listen to the user's command
-#-----------------------------------------
+# -----------------------------------------
 def takeCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -51,20 +56,22 @@ def takeCommand():
         return "None"  # Return "None" when there's an issue
     return query
 
+
 # Function to search on Google
-#-----------------------------
+# -----------------------------
 def searchBrowser(query):
     search_query = query.replace('search for', '').strip()  # Clean up the query
     speak(f"Searching for {search_query} on browser")
     webbrowser.open(f"https://www.google.com/search?q={search_query}")
 
+
 # Main function
-#--------------
+# --------------
 if __name__ == "__main__":
     wishMe()  # Greet the user
     while True:
         query = takeCommand().lower()  # Take command and convert to lowercase
-        
+
         if 'wikipedia' in query:
             speak('Searching Wikipedia...')
             query = query.replace("wikipedia", "")
@@ -78,21 +85,28 @@ if __name__ == "__main__":
             except Exception as e:
                 speak("Sorry, I couldn't retrieve information from Wikipedia.")
 
-        elif 'hello' in query:
-            speak("Hello! How can I assist you today?")
+        elif any(word in query for word in ["hello"]):
+            responses = [
+                "Hello! How can I assist you today?",
+                "Hi there! What can I do for you?",
+                "Hello! Ready to help you",
+                "Hi! Need any assistance?"
+            ]
+            reply = random.choice(responses)  # Select a random greeting response
+            speak(reply)
 
         elif 'open notepad' in query:
             speak("Opening Notepad")
             notepad_path = "C:\\Windows\\System32\\notepad.exe"
             os.startfile(notepad_path)
-            
+
         elif 'search for' in query:
             searchBrowser(query)
 
         elif 'open youtube' in query:
             speak("Opening YouTube")
             webbrowser.open("https://www.youtube.com")
-        
+
         elif 'play music' in query:
             speak("Playing music")
             music_dir = r"D:\Python Project\song"  # Update the music folder path
@@ -110,6 +124,11 @@ if __name__ == "__main__":
             today = datetime.datetime.now().strftime("%B %d, %Y")
             speak(f"Today's date is {today}")
 
-        elif 'close the program' in query:
-            speak("Closing the program. Goodbye!")
+        elif 'close the chat' in query:
+            speak("Closing the chat. Goodbye!")
             break
+
+#Module Installation
+#===================
+#pip install bson pyttsx3 SpeechRecognition wikipedia
+#pip install pyaudio
