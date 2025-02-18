@@ -70,4 +70,4 @@ After starting, Pyra will greet you and wait for your voice commands.
   - Try running `python -m speech_recognition` to debug.
 
 ## Author
-Amar Ranjan Panda
+**_Amar Ranjan Panda_**
